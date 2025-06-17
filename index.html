@@ -18,6 +18,19 @@
     p {font-size: 4vw;margin: 10px 0 30px;}
     .yes {color: green;}
     .no {color: red;}
+    button {
+      font-size: 4vw;
+      padding: 10px 20px;
+      margin-bottom: 30px;
+      background: #ffcc5b;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ffdb79;
+    }
   </style>
 </head>
 <body>
@@ -25,17 +38,17 @@
     <!-- Content will be inserted here -->
   </div>
 
+  <button id="confettiBtn">Launch confetti</button>
+
   <!-- Include canvas-confetti from a CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/+esm"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <script type="module">
     function isBeachOpen() {
       return localStorage.getItem('beachStatus') === 'open';
     }
     function launchConfetti(){
-      for (let i = 0; i < 5; i++) {
-        confetti.default({spread: 160, particleCount: 100, origin: {y: 0.6}});
-      }
+      confetti();
     }
     function updateContent() {
       const container = document.getElementById('content');
@@ -43,7 +56,7 @@
         document.body.style.backgroundColor = '#d0f0c0';
         container.innerHTML = `
           <h1 class="yes">YES!</h1>
-          <p>He is chilling at Bloomfield Beach and having a blast! Go join him!</p>
+          <p>He is chilling at Bloomfield Beach. Go join him!</p>
         `;
         launchConfetti();
       } else {
@@ -56,6 +69,8 @@
     }
     updateContent();
 
+    // Manual button to launch confetti
+    document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
     // Optional: refresh every Minute in case the admin changed the status in another tab
     setInterval(updateContent, 60000);
   </script>
