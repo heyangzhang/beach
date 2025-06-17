@@ -2,36 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Is Ivan At Bloomfield Beach?</title>
   <style>
-    body, html {
-      margin: 0; padding: 0;
-      height: 100%; width: 100%;
-      display: flex; justify-content: center; align-items: center;
-      font-family: Arial, sans-serif;
+    body,html {
+      margin: 0;padding: 0;height: 100%;width: 100%;
+      display: flex;justify-content: center;align-items: center;
+      font-family: Arial,sans-serif;
       transition: background-color 0.5s ease;
       flex-direction: column;
       text-align: center;
     }
-    .container {
-      padding: 2vw;
-      max-width: 90vw;
-    }
-    h1 {
-      font-size: 8vw;
-      margin: 0;
-    }
-    p {
-      font-size: 4vw;
-      margin: 10px 0 30px;
-    }
-    .yes {
-      color: green;
-    }
-    .no {
-      color: red;
-    }
+    .container {padding: 2vw;max-width: 90vw;}
+    h1 {font-size: 8vw;margin: 0;}
+    p {font-size: 4vw;margin: 10px 0 30px;}
+    .yes {color: green;}
+    .no {color: red;}
   </style>
 </head>
 <body>
@@ -39,31 +25,38 @@
     <!-- Content will be inserted here -->
   </div>
 
-  <script>
+  <!-- Include canvas-confetti from a CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/+esm"></script>
+
+  <script type="module">
     function isBeachOpen() {
       return localStorage.getItem('beachStatus') === 'open';
     }
-
+    function launchConfetti(){
+      for (let i = 0; i < 5; i++) {
+        confetti.default({spread: 160, particleCount: 100, origin: {y: 0.6}});
+      }
+    }
     function updateContent() {
       const container = document.getElementById('content');
       if (isBeachOpen()) {
-        document.body.style.backgroundColor = '#d0f0c0'; // light green background
+        document.body.style.backgroundColor = '#d0f0c0';
         container.innerHTML = `
           <h1 class="yes">YES!</h1>
-          <p>THe is chilling at Bloomfield Beach. Go join him!</p>
+          <p>He is chilling at Bloomfield Beach and having a blast! Go join him!</p>
         `;
+        launchConfetti();
       } else {
-        document.body.style.backgroundColor = '#f0d0d0'; // light red background
+        document.body.style.backgroundColor = '#f0d0d0';
         container.innerHTML = `
           <h1 class="no">No</h1>
           <p>Unfortunately, he isn't at the pool. But maybe he's free and thinking about it! Hit him up!</p>
         `;
       }
     }
-
     updateContent();
 
-    // Optional: refresh every minute in case admin changes status in another tab
+    // Optional: refresh every Minute in case the admin changed the status in another tab
     setInterval(updateContent, 60000);
   </script>
 </body>
