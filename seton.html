@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beach Status</title>
+  <style>
+    body,html {
+      margin: 0;padding: 0;height: 100%;width: 100%;
+      display: flex;justify-content: center;align-items: center;
+      font-family: Arial,sans-serif;
+      transition: background-color 0.5s ease;
+      flex-direction: column;text-align: center;
+    }
+    .container {padding: 2vw;max-width: 90vw;}
+    h1 {font-size: 8vw;margin: 0;color: green;}
+    p {font-size: 4vw;margin: 10px 0 30px;color: darkgreen;}
+  </style>
+</head>
+<body>
+  <div class="container" id="content">
+    <!-- Content will be injected here -->
+  </div>
+
+  <script>
+    // Set the beach to "open" upon each visit
+    localStorage.setItem('beachStatus', 'open');
+
+    function isBeachOpen() {
+      return localStorage.getItem('beachStatus') === 'open';
+    }
+
+    function updateContent() {
+      const container = document.getElementById('content');
+      if (isBeachOpen()) {
+        document.body.style.backgroundColor = '#d0f0c0';
+        container.innerHTML = `
+          <h1>Yes!</h1>
+          <p>The beach is now open.</p>
+        `;
+      }
+    }
+    updateContent();
+  </script>
+</body>
+</html>
