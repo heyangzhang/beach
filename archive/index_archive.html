@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Is Ivan At the BLOOMFIELD BEACH</title>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Check if we have a preferred page in localStorage
+        const destination = localStorage.getItem('redirectTarget') || 'no.html';
+        if (destination) {
+            window.location.href = destination;
+        }
+    });
+</script>
+</head>
+<body>
+<p>Is he at the pool?</p>
+</body>
+</html>

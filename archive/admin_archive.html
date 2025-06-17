@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<script>
+    function setTarget(page) {
+        localStorage.setItem('redirectTarget', page);
+        alert('Redirection set to ' + page);
+    }
+    function clearTarget(){
+        localStorage.removeItem('redirectTarget');
+        alert('Redirection cleared to fallback');
+    }
+</script>
+</head>
+<body>
+<h1>Change Redirect</h1>
+<button onclick="setTarget('yes.html')">Go to Yes</button>
+<button onclick="setTarget('no.html')">Go to No</button>
+<button onclick="clearTarget()">Clear (fallback)</button>
+</body>
+</html>

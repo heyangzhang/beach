@@ -1,23 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin</title>
-<script>
-    function setTarget(page) {
-        localStorage.setItem('redirectTarget', page);
-        alert('Redirection set to ' + page);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Set Beach Status</title>
+  <style>
+    body, html {
+      margin: 0; padding: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex; flex-direction: column; align-items: center;
     }
-    function clearTarget(){
-        localStorage.removeItem('redirectTarget');
-        alert('Redirection cleared to fallback');
+    h1 {
+      margin-bottom: 20px;
     }
-</script>
+    label {
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-<h1>Change Redirect</h1>
-<button onclick="setTarget('yes.html')">Go to Yes</button>
-<button onclick="setTarget('no.html')">Go to No</button>
-<button onclick="clearTarget()">Clear (fallback)</button>
+  <h1>Admin: Set Beach Status</h1>
+
+  <div>
+    <label>
+      <input type="radio" name="status" value="open" />
+      Open
+    </label>
+    <label>
+      <input type="radio" name="status" value="closed" />
+      Closed
+    </label>
+  </div>
+
+  <button id="saveBtn">Save Status</button>
+
+  <div class="status" id="statusMsg"></div>
+
+  <script>
+    const saveBtn = document.getElementById('saveBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const radios = document.getElementsByName('status');
+
+    // Load current status from localStorage
+    function loadStatus() {
+      const status = localStorage.getItem('beachStatus') || 'closed';
+      for (const radio of radios) {
+        if (radio.value === status) {
+          radio.checked = true;
+        }
+      }
+    }
+
+    // Save selected status to localStorage
+    saveBtn.addEventListener('click', () => {
+      let selectedStatus = null;
+      for (const radio of radios) {
+        if (radio.checked) {
+          selectedStatus = radio.value;
+          break;
+        }
+      }
+      if (selectedStatus) {
+        localStorage.setItem('beachStatus', selectedStatus);
+        statusMsg.textContent = `Status saved: Beach is ${selectedStatus}`;
+        statusMsg.style.color = selectedStatus === 'open' ? 'green' : 'red';
+      } else {
+        statusMsg.textContent = 'Please select a status before saving.';
+        statusMsg.style.color = 'orange';
+      }
+    });
+
+    loadStatus();
+  </script>
 </body>
 </html>
