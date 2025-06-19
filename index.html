@@ -28,9 +28,7 @@
       border-radius: 10px;
       cursor: pointer;
     }
-    button:hover {
-      background: #ffdb79;
-    }
+    button:hover { background: #ffdb79; }
   </style>
 </head>
 <body>
@@ -40,21 +38,43 @@
 
   <button id="confettiBtn">Launch confetti</button>
 
-  <!-- Include canvas-confetti from a CDN -->
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Include confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <script type="module">
+<<<<<<< Updated upstream
     function isBeachOpen() {
       return localStorage.getItem('beachStatus') !== 'open';
     }
     function launchConfetti(){
+=======
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoYfrLTsHbeC18LYtpvEQAQPrv5uQEOes",
+      authDomain: "beach-toggles.firebaseapp.com",
+      databaseURL: "https://beach-toggles-default-rtdb.firebaseio.com",
+      projectId: "beach-toggles",
+      storageBucket: "beach-toggles.firebasestorage.app",
+      messagingSenderId: "244826414531",
+      appId: "1:244826414531:web:d57a72acea98a343803176"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const container = document.getElementById('content');
+    const button = document.getElementById('confettiBtn');
+
+    function launchConfetti() {
+>>>>>>> Stashed changes
       confetti();
     }
-    function updateContent() {
-      const container = document.getElementById('content');
-      const button = document.getElementById('confettiBtn'); // Get button
 
-      if (isBeachOpen()) {
+    function renderStatus(isOpen) {
+      if (isOpen) {
         document.body.style.backgroundColor = '#d0f0c0';
         container.innerHTML = `
           <h1 class="yes">YES!</h1>
@@ -71,13 +91,15 @@
         button.style.display = 'none';
       }
     }
-    updateContent();
 
-    // Manual button to launch confetti
+    // Listen for real-time beach status
+    firebase.database().ref("beachStatus").on("value", (snapshot) => {
+      const status = snapshot.val();
+      renderStatus(status === "open");
+    });
+
+    // Button to manually trigger confetti
     document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
-
-    // Optional: refresh every Minute in case the admin changed the status in another tab
-    setInterval(updateContent, 60000);
   </script>
 </body>
 </html>

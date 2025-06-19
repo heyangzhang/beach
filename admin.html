@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+<<<<<<< Updated upstream
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Is Ivan At Bloomfield Beach?</title>
@@ -70,14 +71,81 @@
         `;
         button.style.display = 'none';
       }
+=======
+  <title>Beach Toggle Control</title>
+</head>
+<body>
+
+  <!-- These are the toggle buttons -->
+  <button id="seton">Set Pool ON</button>
+  <button id="setoff">Set Pool OFF</button>
+  <button id="admin">Enable Admin Mode</button>
+
+  <!-- These are the text labels for current status -->
+  <p id="statusLabel">Loading pool status...</p>
+  <p id="adminStatus">Loading admin status...</p>
+
+  <!-- Firebase scripts go here -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Your Firebase setup and logic -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoYfrLTsHbeC18LYtpvEQAQPrv5uQEOes",
+      authDomain: "beach-toggles.firebaseapp.com",
+      databaseURL: "https://beach-toggles-default-rtdb.firebaseio.com",
+      projectId: "beach-toggles",
+      storageBucket: "beach-toggles.firebasestorage.app",
+      messagingSenderId: "244826414531",
+      appId: "1:244826414531:web:d57a72acea98a343803176"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function setToggle(key, value) {
+      db.ref(key).set(value);
+>>>>>>> Stashed changes
     }
     updateContent();
 
+<<<<<<< Updated upstream
     // Manual button to launch confetti
     document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
 
     // Optional: refresh every Minute in case the admin changed the status in another tab
     setInterval(updateContent, 60000);
+=======
+    function listenToToggle(key, callback) {
+      db.ref(key).on('value', (snapshot) => {
+        callback(snapshot.val());
+      });
+    }
+
+    document.getElementById("seton").addEventListener("click", () => {
+      setToggle("poolStatus", "on");
+    });
+
+    document.getElementById("setoff").addEventListener("click", () => {
+      setToggle("poolStatus", "off");
+    });
+
+    document.getElementById("admin").addEventListener("click", () => {
+      setToggle("adminMode", true);
+    });
+
+    listenToToggle("poolStatus", (status) => {
+      document.getElementById("statusLabel").textContent =
+        status === "on" ? "🏖️ The pool is OPEN" : "🚫 The pool is CLOSED";
+    });
+
+    listenToToggle("adminMode", (isAdmin) => {
+      document.getElementById("adminStatus").textContent =
+        isAdmin ? "👑 Admin mode enabled" : "🙅 Admin mode off";
+    });
+>>>>>>> Stashed changes
   </script>
+
 </body>
 </html>
