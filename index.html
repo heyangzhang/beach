@@ -29,17 +29,6 @@
       cursor: pointer;
     }
     button:hover { background: #ffdb79; }
-
-    #adminPanel {
-      margin-top: 40px;
-      padding: 20px;
-      border-top: 2px solid #ccc;
-    }
-
-    .adminLabel {
-      font-size: 3vw;
-      margin-bottom: 10px;
-    }
   </style>
 </head>
 <body>
@@ -48,13 +37,6 @@
   </div>
 
   <button id="confettiBtn">Launch confetti</button>
-
-  <!-- Admin panel (initially hidden) -->
-  <div id="adminPanel" style="display:none;">
-    <p class="adminLabel">🔧 Admin Control Panel</p>
-    <button id="openBeachBtn">Set Beach Open</button>
-    <button id="closeBeachBtn">Set Beach Closed</button>
-  </div>
 
   <!-- Firebase and confetti scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -110,24 +92,6 @@
 
     // Confetti trigger button
     document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
-
-    // Admin panel visibility and actions
-    function isAdmin() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("admin") === "1";
-    }
-
-    if (isAdmin()) {
-      document.getElementById("adminPanel").style.display = "block";
-
-      document.getElementById("openBeachBtn").addEventListener("click", () => {
-        firebase.database().ref("beachStatus").set("open");
-      });
-
-      document.getElementById("closeBeachBtn").addEventListener("click", () => {
-        firebase.database().ref("beachStatus").set("closed");
-      });
-    }
   </script>
 </body>
 </html>
