@@ -19,10 +19,32 @@
 </head>
 <body>
   <div>
-    <h1>🏖️ You have left the beach :(</h1>
+    <h1>🏖️ You have left the pool</h1>
     <p>This page automatically updated the Firebase status to "closed".</p>
   </div>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoYfrLTsHbeC18LYtpvEQAQPrv5uQEOes",
+      authDomain: "beach-toggles.firebaseapp.com",
+      databaseURL: "https://beach-toggles-default-rtdb.firebaseio.com",
+      projectId: "beach-toggles",
+      storageBucket: "beach-toggles.firebasestorage.app",
+      messagingSenderId: "244826414531",
+      appId: "1:244826414531:web:d57a72acea98a343803176"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Immediately set beachStatus to "closed"
+    db.ref("beachStatus").set("closed")
+      .then(() => console.log("Beach closed."))
+      .catch(err => console.error("Error setting status:", err));
+  </script>
+</body>
+</html>
