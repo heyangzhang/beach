@@ -3,44 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Beach Status</title>
+  <title>Beach Status: Open Trigger</title>
   <style>
-    body,html {
-      margin: 0;padding: 0;height: 100%;width: 100%;
-      display: flex;justify-content: center;align-items: center;
-      font-family: Arial,sans-serif;
-      transition: background-color 0.5s ease;
-      flex-direction: column;text-align: center;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+      background-color: #d4edda;
+      color: #155724;
+      text-align: center;
     }
-    .container {padding: 2vw;max-width: 90vw;}
-    h1 {font-size: 8vw;margin: 0;color: green;}
-    p {font-size: 4vw;margin: 10px 0 30px;color: darkgreen;}
   </style>
 </head>
 <body>
-  <div class="container" id="content">
-    <!-- Content will be injected here -->
+  <div>
+    <h1>✅ Beach status has been set to OPEN.</h1>
+    <p>This page automatically updated the Firebase status to "open".</p>
   </div>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <script>
-    // Set the beach to "open" upon each visit
-    localStorage.setItem('beachStatus', 'open');
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoYfrLTsHbeC18LYtpvEQAQPrv5uQEOes",
+      authDomain: "beach-toggles.firebaseapp.com",
+      databaseURL: "https://beach-toggles-default-rtdb.firebaseio.com",
+      projectId: "beach-toggles",
+      storageBucket: "beach-toggles.firebasestorage.app",
+      messagingSenderId: "244826414531",
+      appId: "1:244826414531:web:d57a72acea98a343803176"
+    };
 
-    function isBeachOpen() {
-      return localStorage.getItem('beachStatus') === 'open';
-    }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function updateContent() {
-      const container = document.getElementById('content');
-      if (isBeachOpen()) {
-        document.body.style.backgroundColor = '#d0f0c0';
-        container.innerHTML = `
-          <h1>Yes!</h1>
-          <p>The beach is now open.</p>
-        `;
-      }
-    }
-    updateContent();
+    // Immediately set beachStatus to "open"
+    db.ref("beachStatus").set("open")
+      .then(() => console.log("Beach opened."))
+      .catch(err => console.error("Error setting status:", err));
   </script>
 </body>
 </html>
