@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +15,8 @@
             justify-content: center;
             align-items: center;
             font-family: system-ui, sans-serif;
-            transition: background-color 0.3s ease;
             text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .open {
@@ -33,6 +34,11 @@
             margin: 0;
         }
 
+        .emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
         .note {
             margin-top: 1rem;
             font-size: 1.5rem;
@@ -42,31 +48,26 @@
 
         .updated {
             margin-top: 2rem;
-            font-size: 0.9rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         #confettiBtn {
+            display: none;
             margin-top: 1.5rem;
             padding: 12px 24px;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: bold;
             border: none;
             border-radius: 999px;
             background: white;
             color: #4CAF50;
             cursor: pointer;
-            font-weight: bold;
-            display: none;
             transition: transform 0.2s ease;
         }
 
         #confettiBtn:hover {
             transform: scale(1.05);
-        }
-
-        .emoji {
-            font-size: 4rem;
-            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -93,70 +94,103 @@
             });
         }
 
+        function timeAgo(dateString) {
+            const seconds = Math.floor(
+                (Date.now() - new Date(dateString).getTime()) / 1000
+            );
+
+            if (seconds < 60) return "just now";
+
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) {
+                return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+            }
+
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) {
+                return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+            }
+
+            const days = Math.floor(hours / 24);
+            return `${days} day${days !== 1 ? "s" : ""} ago`;
+        }
+
+        function formatTime(dateString) {
+            return new Date(dateString).toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+        }
+
         async function loadStatus() {
             try {
-                const response = await fetch(
-                    './status.json?v=' + Date.now()
-                );
-
+                const response = await fetch("./status.json?v=" + Date.now());
                 const data = await response.json();
 
-                const statusElement = document.getElementById('status');
-                const noteElement = document.getElementById('note');
-                const updatedElement = document.getElementById('updated');
-                const confettiBtn = document.getElementById('confettiBtn');
-                const emojiElement = document.getElementById('emoji');
+                const statusElement = document.getElementById("status");
+                const noteElement = document.getElementById("note");
+                const updatedElement = document.getElementById("updated");
+                const confettiBtn = document.getElementById("confettiBtn");
+                const emojiElement = document.getElementById("emoji");
 
-                if (data.status === 'open') {
-                    document.body.className = 'open';
-
-                    statusElement.textContent = 'YES';
-                    emojiElement.textContent = '🏊‍♂️';
+                if (data.status === "open") {
+                    document.body.className = "open";
+                    statusElement.textContent = "YES";
+                    emojiElement.textContent = "🏊‍♂️";
 
                     noteElement.textContent =
-                        data.note || 'Come Join Him';
+                        data.note || "Come Join Him";
 
-                    confettiBtn.style.display = 'inline-block';
+                    confettiBtn.style.display = "inline-block";
 
-                    // Auto-confetti on page load
-                    setTimeout(launchConfetti, 500);
+                    if (!window.hasCelebratedPoolStatus) {
+                        setTimeout(launchConfetti, 500);
+                        window.hasCelebratedPoolStatus = true;
+                    }
+
+                    if (data.updatedAt) {
+                        updatedElement.textContent =
+                            `🏊 Ivan has been poolside since ${formatTime(data.updatedAt)} • ${timeAgo(data.updatedAt)}`;
+                    }
 
                 } else {
-                    document.body.className = 'closed';
-
-                    statusElement.textContent = 'NO';
-                    emojiElement.textContent = '😔';
+                    document.body.className = "closed";
+                    statusElement.textContent = "NO";
+                    emojiElement.textContent = "😔";
 
                     noteElement.textContent =
-                        data.note || 'But He Is Probably Thinking About Going';
+                        data.note || "But He Is Probably Thinking About Going";
 
-                    confettiBtn.style.display = 'none';
-                }
+                    confettiBtn.style.display = "none";
 
-                if (data.updatedAt) {
-                    updatedElement.textContent =
-                        `Last updated: ${new Date(data.updatedAt).toLocaleString()}`;
+                    if (data.updatedAt) {
+                        updatedElement.textContent =
+                            `☀️ Last pool update ${timeAgo(data.updatedAt)}`;
+                    }
                 }
 
             } catch (error) {
-                document.body.className = 'closed';
-
-                document.getElementById('status').textContent = 'ERROR';
-                document.getElementById('emoji').textContent = '⚠️';
-                document.getElementById('note').textContent =
-                    'Could not load pool status.';
+                document.body.className = "closed";
+                document.getElementById("status").textContent = "ERROR";
+                document.getElementById("emoji").textContent = "⚠️";
+                document.getElementById("note").textContent =
+                    "Could not load pool status.";
+                document.getElementById("updated").textContent = "";
 
                 console.error(error);
             }
         }
 
         document
-            .getElementById('confettiBtn')
-            .addEventListener('click', launchConfetti);
-        
+            .getElementById("confettiBtn")
+            .addEventListener("click", launchConfetti);
+
         loadStatus();
+
+        // Refresh every minute
         setInterval(loadStatus, 60000);
     </script>
 
 </body>
 </html>
+```
