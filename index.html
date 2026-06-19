@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,7 @@
             align-items: center;
             font-family: system-ui, sans-serif;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
 
         .open {
@@ -28,7 +30,7 @@
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 5rem;
             margin: 0;
         }
 
@@ -36,7 +38,7 @@
             margin-top: 1rem;
             font-size: 1.5rem;
             font-weight: 500;
-            text-align: center;
+            max-width: 80%;
         }
 
         .updated {
@@ -44,47 +46,118 @@
             font-size: 0.9rem;
             opacity: 0.8;
         }
+
+        #confettiBtn {
+            margin-top: 1.5rem;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 999px;
+            background: white;
+            color: #4CAF50;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+            transition: transform 0.2s ease;
+        }
+
+        #confettiBtn:hover {
+            transform: scale(1.05);
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
 
+    <div class="emoji" id="emoji">🏊</div>
+
     <h1 id="status">Loading...</h1>
+
     <div class="note" id="note"></div>
+
+    <button id="confettiBtn">🎉 Celebrate Ivan Being at the Pool</button>
+
     <div class="updated" id="updated"></div>
 
-       <script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <script>
+        function launchConfetti() {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }
+
         async function loadStatus() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/heyangzhang/beach/main/status.json?v=' + Date.now());
+                const response = await fetch(
+                    'https://raw.githubusercontent.com/heyangzhang/beach/main/status.json?v=' + Date.now()
+                );
+
                 const data = await response.json();
 
                 const statusElement = document.getElementById('status');
                 const noteElement = document.getElementById('note');
                 const updatedElement = document.getElementById('updated');
+                const confettiBtn = document.getElementById('confettiBtn');
+                const emojiElement = document.getElementById('emoji');
 
                 if (data.status === 'open') {
                     document.body.className = 'open';
+
                     statusElement.textContent = 'YES';
-                    noteElement.textContent = data.note || 'Come Join Him';
+                    emojiElement.textContent = '🏊‍♂️';
+
+                    noteElement.textContent =
+                        data.note || 'Come Join Him';
+
+                    confettiBtn.style.display = 'inline-block';
+
+                    // Auto-confetti on page load
+                    setTimeout(launchConfetti, 500);
+
                 } else {
                     document.body.className = 'closed';
+
                     statusElement.textContent = 'NO';
-                    noteElement.textContent = data.note || 'But He Is Probably Thinking About Going';
+                    emojiElement.textContent = '😔';
+
+                    noteElement.textContent =
+                        data.note || 'But He Is Probably Thinking About Going';
+
+                    confettiBtn.style.display = 'none';
                 }
 
-                updatedElement.textContent =
-                    `Last updated: ${new Date(data.updatedAt).toLocaleString()}`;
+                if (data.updatedAt) {
+                    updatedElement.textContent =
+                        `Last updated: ${new Date(data.updatedAt).toLocaleString()}`;
+                }
 
             } catch (error) {
                 document.body.className = 'closed';
+
                 document.getElementById('status').textContent = 'ERROR';
-                document.getElementById('note').textContent = 'Could not load status.';
+                document.getElementById('emoji').textContent = '⚠️';
+                document.getElementById('note').textContent =
+                    'Could not load pool status.';
+
                 console.error(error);
             }
         }
-    
+
+        document
+            .getElementById('confettiBtn')
+            .addEventListener('click', launchConfetti);
+
         loadStatus();
     </script>
 
 </body>
 </html>
+```
