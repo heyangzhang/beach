@@ -65,11 +65,11 @@
                 if (data.status === 'open') {
                     document.body.className = 'open';
                     statusElement.textContent = 'YES';
-                    noteElement.textContent = 'Come Join Him';
+                    noteElement.textContent = data.note || 'Come Join Him';
                 } else {
                     document.body.className = 'closed';
                     statusElement.textContent = 'NO';
-                    noteElement.textContent = 'But He Is Probably Thinking About Going';
+                    noteElement.textContent = data.note || 'But He Is Probably Thinking About Going';
                 }
 
                 document.getElementById('note').textContent =
