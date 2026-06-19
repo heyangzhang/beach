@@ -55,7 +55,7 @@
     <script>
         async function loadStatus() {
             try {
-                const response = await fetch('./status.json?v=' + Date.now());
+                const response = await fetch('https://raw.githubusercontent.com/heyangzhang/beach/main/status.json?v=' + Date.now());
                 const data = await response.json();
 
                 const statusElement = document.getElementById('status');
