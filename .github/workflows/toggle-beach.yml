@@ -1,0 +1,44 @@
+name: Toggle Beach Status
+
+on:
+  workflow_dispatch:
+    inputs:
+      status:
+        description: "Beach status"
+        required: true
+        type: choice
+        options:
+          - open
+          - closed
+      note:
+        description: "Optional public note"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update status.json
+        run: |
+          cat > status.json <<EOF
+          {
+            "status": "${{ inputs.status }}",
+            "note": "${{ inputs.note }}",
+            "updatedAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+
+      - name: Commit change
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add status.json
+          git commit -m "Set beach status to ${{ inputs.status }}" || echo "No changes"
+          git push
