@@ -1,97 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Is Ivan At The Pool?</title>
-  <style>
-    body,html {
-      margin: 0;padding: 0;height: 100%;width: 100%;
-      display: flex;justify-content: center;align-items: center;
-      font-family: Arial,sans-serif;
-      transition: background-color 0.5s ease;
-      flex-direction: column;
-      text-align: center;
-    }
-    .container {padding: 2vw;max-width: 90vw;}
-    h1 {font-size: 8vw;margin: 0;}
-    p {font-size: 4vw;margin: 10px 0 30px;}
-    .yes {color: green;}
-    .no {color: red;}
-    button {
-      font-size: 4vw;
-      padding: 10px 20px;
-      margin: 10px;
-      background: #ffcc5b;
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    button:hover { background: #ffdb79; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Ivan at the Pool?</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .open {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .closed {
+            background: #F44336;
+            color: white;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+        }
+
+        .note {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .updated {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-  <div class="container" id="content">
-    <!-- Main status content will go here -->
-  </div>
 
-  <button id="confettiBtn">Launch confetti</button>
+    <h1 id="status">Loading...</h1>
+    <div class="note" id="note"></div>
+    <div class="updated" id="updated"></div>
 
-  <!-- Firebase and confetti scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        async function loadStatus() {
+            try {
+                const response = await fetch('./status.json?v=' + Date.now());
+                const data = await response.json();
 
-  <script type="module">
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBoYfrLTsHbeC18LYtpvEQAQPrv5uQEOes",
-      authDomain: "beach-toggles.firebaseapp.com",
-      databaseURL: "https://beach-toggles-default-rtdb.firebaseio.com",
-      projectId: "beach-toggles",
-      storageBucket: "beach-toggles.firebasestorage.app",
-      messagingSenderId: "244826414531",
-      appId: "1:244826414531:web:d57a72acea98a343803176"
-    };
+                const statusElement = document.getElementById('status');
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+                if (data.status === 'open') {
+                    document.body.className = 'open';
+                    statusElement.textContent = 'YES';
+                } else {
+                    document.body.className = 'closed';
+                    statusElement.textContent = 'NO';
+                }
 
-    const container = document.getElementById('content');
-    const button = document.getElementById('confettiBtn');
+                document.getElementById('note').textContent =
+                    data.note || '';
 
-    function launchConfetti() {
-      confetti();
-    }
+                document.getElementById('updated').textContent =
+                    `Last updated: ${new Date(data.updatedAt).toLocaleString()}`;
 
-    function renderStatus(isOpen) {
-      if (isOpen) {
-        document.body.style.backgroundColor = '#d0f0c0';
-        container.innerHTML = `
-          <h1 class="yes">YES!</h1>
-          <p>He is chilling at Bloomfield Beach. Go join him!</p>
-        `;
-        button.style.display = 'inline-block';
-        launchConfetti();
-      } else {
-        document.body.style.backgroundColor = '#f0d0d0';
-        container.innerHTML = `
-          <h1 class="no">No</h1>
-          <p>Unfortunately, he isn't at the pool. But maybe he's free and thinking about it! Hit him up!</p>
-        `;
-        button.style.display = 'none';
-      }
-    }
+            } catch (error) {
+                document.body.className = 'closed';
+                document.getElementById('status').textContent = 'ERROR';
+                console.error(error);
+            }
+        }
 
-    // Listen for real-time beachStatus updates
-    firebase.database().ref("beachStatus").on("value", (snapshot) => {
-      const status = snapshot.val();
-      renderStatus(status === "open");
-    });
+        loadStatus();
+    </script>
 
-    // Confetti trigger button
-    document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
-  </script>
 </body>
 </html>
